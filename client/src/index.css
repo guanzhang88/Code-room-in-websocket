@@ -48,6 +48,13 @@
   padding: 20px;
   border-right: 1px solid #fdfdfd;
 }
+.room__btn__Box{
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  width: 200px;
+  height: 140px;
+}
 .chat__main {
   height: 100%;
   flex: 0.8;

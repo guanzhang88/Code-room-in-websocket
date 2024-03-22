@@ -14,7 +14,7 @@ const Home = ({socket}) => {
   };
   return (
     <form className="home__container" onSubmit={handleSubmit}>
-      <h2 className="home__header">登录聊天</h2>
+      <h2 className="home__header">登录</h2>
       <label htmlFor="username">用户名</label>
       <input
         type="text"

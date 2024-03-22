@@ -19,6 +19,8 @@ const socketIO = new Server(
 
 // 存储用户数据的数组
 let users = [];
+// 存储房间号的数组
+let roomIdList = [];
 
 app.use(cors());
 
@@ -46,6 +48,16 @@ socketIO.on('connection', (socket) => {
         users.push(data);
         // 将用户列表发送给客户端
         socketIO.emit('newUserResponse', users);
+    })
+
+    // 监听用户加入房间的请求
+    socket.on('joinRoom', (data) => {
+        if (roomIdList.find(room => room == data)) {
+            socket.join(data);
+            socketIO.emit('joinRoomResponse', true);
+        } else {
+            socketIO.emit('joinRoomResponse', false);
+        } 
     })
 
     socket.on('typing', (data) => {
