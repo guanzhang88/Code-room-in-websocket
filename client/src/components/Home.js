@@ -1,32 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Home = ({socket}) => {
   const navigate = useNavigate();
-  const [userName, setUserName] = useState('');
+  const [roomId, setRoomId] = useState('');
+  const createRoomId = Math.random(1,100);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    localStorage.setItem('userName', userName);
+  useEffect(() => {
+    socket.on('joinRoomResponse', (data) => {
+      if (data) {
+        navigate('/chat');
+      } else {
+        alert('该房间不存在')
+      }
+    })
+    // return ()=> socket.off('joinRoomResponse', ()=>{});
+  }, [socket]);
+
+  const handleJoinRoom = () => {
     // 发送用户名和socketID到服务器
-    socket.emit('newUser', {userName, socketID: socket.id})
+    socket.emit('joinRoom', {roomId})
+  };
+
+  const handleCreateRoom = () => {
+    socket.emit('newRoom', {createRoomId})
     navigate('/chat');
   };
+
   return (
-    <form className="home__container" onSubmit={handleSubmit}>
-      <h2 className="home__header">登录聊天</h2>
-      <label htmlFor="username">用户名</label>
+    <div className='home__container'>
+      <h2 className="home__header">加入房间</h2>
+      <label htmlFor="username">房间号</label>
       <input
         type="text"
         minLength={3}
         name="username"
         id="username"
         className="username__input"
-        value={userName}
-        onChange={(e) => setUserName(e.target.value)}
+        value={roomId}
+        onChange={(e) => setRoomId(e.target.value)}
       />
-      <button className="home__cta">登录</button>
-    </form>
+      <button className="home__cta" onClick={handleJoinRoom}>加入</button>
+      <button className="home__cta" onClick={handleCreateRoom}>创建房间</button>
+    </div>
+
   );
 };
 
