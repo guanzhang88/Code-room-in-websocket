@@ -17,8 +17,8 @@ const socketIO = new Server(
     }
 );
 
-// 存储房间号数据的数组
-let roomList = [];
+// 存储用户数据的数组
+let users = [];
 
 app.use(cors());
 
@@ -41,14 +41,11 @@ socketIO.on('connection', (socket) => {
     });
 
     // 监听新用户的登录
-    socket.on('joinRoom', (data) => {
+    socket.on('newUser', (data) => {
         // 将新用户添加到数组中
-        let checked = false;
-        if (roomList.find((item) => item === data)) {
-            checked = true;
-        }
+        users.push(data);
         // 将用户列表发送给客户端
-        socketIO.emit('joinRoomResponse', checked);
+        socketIO.emit('newUserResponse', users);
     })
 
     socket.on('typing', (data) => {
@@ -63,8 +60,8 @@ socketIO.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('🔥: 一个用户已断开连接');
         // 当用户下线时更新用户列表
-        // users = users.filter((user) => user.socketID !== socket.id);
-        // socketIO.emit('userList', users);
+        users = users.filter((user) => user.socketID !== socket.id);
+        socketIO.emit('userList', users);
         socket.disconnect();
     });
 });

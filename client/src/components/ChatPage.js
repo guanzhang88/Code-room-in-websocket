@@ -10,7 +10,6 @@ const ChatPage = ({ socket }) => {
 
     useEffect(() => {
         socket.on('messageResponse', (data) => setMessages([...messages, data]));
-        console.log(data);
         return () => socket.off('messageResponse', (data) => setMessages([...messages, data]));;
     }, [socket, messages]);
 
